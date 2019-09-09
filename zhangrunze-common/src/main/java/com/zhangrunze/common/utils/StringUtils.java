@@ -179,15 +179,13 @@ public class StringUtils {
 	*/
 
 	public static String toHtml(String text) {
+		text = text.replaceAll("\\\n\r","\n");
+		text = text.replaceAll("\\\r","<br/>");
 		String[] split = text.split("(\\\n)");
 		StringBuilder builder = new StringBuilder();
-		if (split.length==1) {
-				builder.append(split[0].replaceAll("\r","")).append("<br/>");
-		}else {
 			for(String str:split) {
-				builder.append("<p>").append(str.replaceAll("\r","")).append("</p>\n");
+				builder.append("<p>").append(str).append("</p>\n");
 			}
-		}
 		return builder.toString();
 	}
 }
