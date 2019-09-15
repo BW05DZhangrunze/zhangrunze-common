@@ -1,12 +1,21 @@
 package com.zhangrunze.common.utils;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
 /**
- * 
- * @author zhangrunze 文件工具类
+ * @version: 
+ * @Description: （对类进行功能描述） 
+ * @author:弓长润泽Z
+ * @date: 2019年9月15日 下午3:37:11
  */
 public class FileUtil {
 
@@ -103,5 +112,18 @@ public class FileUtil {
 			return 0;
 		}
 
+	}
+	public static List fileToBean(String fileName,Constructor constructor) throws IOException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		File file = new File(fileName);
+		BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+		String lineString=null;
+		List  list = new ArrayList();
+		while((lineString =  bufferedReader.readLine()) !=null){
+			String[] split = lineString.split("\\|");
+			Object object = constructor.newInstance(split);
+			list.add(object);
+			
+		}
+		return list;
 	}
 }
