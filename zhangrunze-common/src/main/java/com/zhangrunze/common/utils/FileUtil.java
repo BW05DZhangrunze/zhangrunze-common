@@ -2,8 +2,10 @@ package com.zhangrunze.common.utils;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -12,8 +14,8 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 /**
- * @version: 
- * @Description: （对类进行功能描述） 
+ * @version:
+ * @Description: （对类进行功能描述）
  * @author:弓长润泽Z
  * @date: 2019年9月15日 下午3:37:11
  */
@@ -77,12 +79,12 @@ public class FileUtil {
 	}
 
 	/**
-	 * 
+	 * 通过键值获取相对应的系统属性
+	 * 例如：os.name -->10 ：获得windows系统版本
 	 * @param key
 	 * @return
 	 */
 	public static String getSystemProp(String key) {
-
 		String propValue = System.getProperty(key);
 		return propValue;
 
@@ -113,46 +115,51 @@ public class FileUtil {
 		}
 
 	}
-	public static List fileToBean(String fileName,Constructor constructor) throws IOException, NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+
+	public static List fileToBean(String fileName, Constructor constructor)
+			throws IOException, NoSuchMethodException, SecurityException, InstantiationException,
+			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		File file = new File(fileName);
 		BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
-		String lineString=null;
-		List  list = new ArrayList();
-		while((lineString =  bufferedReader.readLine()) !=null){
+		String lineString = null;
+		List list = new ArrayList();
+		while ((lineString = bufferedReader.readLine()) != null) {
 			String[] split = lineString.split("\\|\\|");
 			Object object = constructor.newInstance(split);
 			list.add(object);
 		}
-		return list;	
+		return list;
 	}
-	
-	
-	/*便利文件夹
-*/	
-	public static List<String> getFileList(String pathName){
+
+	/**
+	 * 便利文件夹
+	 */
+	public static List<String> getFileList(String pathName) {
 		String[] list = new File(pathName).list();
-		 List<String> fileList = new ArrayList<String>();
+		List<String> fileList = new ArrayList<String>();
 		for (String string : list) {
 			File subFile = new File(pathName + "\\" + string);
-			if(subFile!=null && subFile.exists() && subFile.isFile())
+			if (subFile != null && subFile.exists() && subFile.isFile())
 				fileList.add(pathName + "\\" + string);
 		}
 		return fileList;
-		
+
 	}
-	
+
 	/**
 	 * 读取文件内容
-	 * @throws IOException 
+	 * 
+	 * @throws IOException
 	 */
+	@SuppressWarnings("resource")
 	public static String readFile(String fileName) throws IOException {
 
 		StringBuilder sb = new StringBuilder();
-		
+
 		File file = new File(fileName);
-		BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+		FileInputStream fIS = new FileInputStream(file);
+		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fIS, "utf-8"));
 		String lineString = null;
-		
 		while ((lineString = bufferedReader.readLine()) != null) {
 			sb.append(lineString).append("\n");
 		}
